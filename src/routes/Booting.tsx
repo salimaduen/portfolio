@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import TerminalLineLoading from "../components/TerminalLineLoading";
 
 export interface bootingProps {
-    nextStage: () => void;
+  nextStage: () => void;
 }
 
 export default function Booting({ nextStage }: bootingProps) {
-    const bootMessages = [
+      const bootMessages = [
         "Started Apply Kernel Variables.",
         "Mounted Kernel Debug File System.",
         "Mounted Huge Pages File System.",
@@ -77,37 +77,50 @@ export default function Booting({ nextStage }: bootingProps) {
         "Starting Disk Manager...",
         "Started Disk Manager.",
         "Reached target Printer."
-    ]    
+    ];
 
-    const [visibleLines, setVisibleLines ] = useState<number>(0);
-    const containerRef = useRef<HTMLDivElement | null>(null);
+  const [visibleLines, setVisibleLines] = useState<number>(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const skipRef = useRef<boolean>(false);
 
-    useEffect(() => {
-        if (visibleLines < bootMessages.length) {
-            const time = Math.floor(Math.random() * 30);
-            const timer = setTimeout(() => {
-                setVisibleLines((prev) => prev + 1);
-            }, time);
-            return () => clearTimeout(timer);
-        } else {
-            const timer = setTimeout(() => {
-                nextStage();
-            }, 200)
-            return () => clearTimeout(timer);
-        }
-    }, [visibleLines, bootMessages.length]);
+  // Pace: ~18–50ms per line feels OS-like but readable
+  useEffect(() => {
+    if (visibleLines < bootMessages.length && !skipRef.current) {
+      const time = 18 + Math.floor(Math.random() * 32);
+      const timer = setTimeout(() => setVisibleLines((p) => p + 1), time);
+      return () => clearTimeout(timer);
+    }
+    if (visibleLines >= bootMessages.length) {
+      const t = setTimeout(() => nextStage(), 250);
+      return () => clearTimeout(t);
+    }
+  }, [visibleLines, bootMessages.length, nextStage]);
 
-    useEffect(() => {
-        if (containerRef.current) {
-          containerRef.current.scrollTop = containerRef.current.scrollHeight;
-        }
-      }, [visibleLines]);
+  // Auto-scroll
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [visibleLines]);
 
-    return (
-        <div ref={containerRef} className="h-screen overflow-y-auto">
-            {bootMessages.slice(0, visibleLines).map((line, idx) => (
-                <TerminalLineLoading key={idx} line={line}/>
-            ))}
-        </div>
-    );
+  // Press Enter to skip
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        skipRef.current = true;
+        setVisibleLines(bootMessages.length);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [bootMessages.length]);
+
+  return (
+    <div ref={containerRef} className="h-screen overflow-y-auto p-2 text-green-200 font-mono">
+      {bootMessages.slice(0, visibleLines).map((line, idx) => (
+        <TerminalLineLoading key={idx} line={line} />
+      ))}
+      <div className="mt-2 text-xs opacity-70">Press <kbd>Enter</kbd> to skip boot</div>
+    </div>
+  );
 }
