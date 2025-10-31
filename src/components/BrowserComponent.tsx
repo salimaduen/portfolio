@@ -32,7 +32,7 @@ export default function BrowserComponent({
   const showIframe = Boolean(url && !Page && !content);
 
   return (
-    <WindowContainer>
+    <WindowContainer draggable zIndex={20}>
       <WindowChrome title={title} variant="dark" onClose={onClose} />
 
       <MenuBar items={["File", "Edit", "View", "Go", "Help"]} />

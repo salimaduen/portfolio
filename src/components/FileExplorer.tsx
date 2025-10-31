@@ -10,27 +10,16 @@ import WindowContainer from "./WindowContainer";
 import MenuBar from "./MenuBar";
 import NavControls from "./NavControls";
 import AddressField from "./AddressField";
-
-interface CircleWrapperProps { children: React.ReactNode; }
-function CircleWrapper({ children }: CircleWrapperProps) {
-  return <div className="flex items-center justify-center bg-gray-300 w-5 h-5 rounded-full">{children}</div>;
-}
+import WindowChrome from "./WindowChrome";
 
 export default function FileExplorer() {
   const fileExplorerBar = ["File", "Edit", "View", "Go", "Help"];
   const fileExplorerLocations = ["Documents", "Music", "Pictures", "Videos", "Downloads"];
 
   return (
-    <WindowContainer zIndex={10}>
+    <WindowContainer draggable zIndex={10}>
       {/* Top bar (keep your exact layout/buttons) */}
-      <div className="flex relative bg-gray-200 w-full h-6 items-center justify-end px-2">
-        <p className="absolute inset-0 text-center text-gray-700">Home</p>
-        <div className="flex space-x-3">
-          <CircleWrapper><FaRegWindowMinimize size={12} color="gray" /></CircleWrapper>
-          <CircleWrapper><VscChromeMaximize color="gray" /></CircleWrapper>
-          <CircleWrapper><IoMdClose color="gray" /></CircleWrapper>
-        </div>
-      </div>
+      <WindowChrome title="Home" variant="light" />
 
       <MenuBar items={fileExplorerBar} />
 
