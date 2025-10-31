@@ -1,6 +1,5 @@
-import { VscChromeMaximize } from "react-icons/vsc";
-import { IoMdClose, IoMdRefresh } from "react-icons/io";
-import { FaRegWindowMinimize, FaFolder } from "react-icons/fa6";
+import { IoMdRefresh } from "react-icons/io";
+import { FaFolder } from "react-icons/fa6";
 import { GrPrevious, GrNext, GrUp } from "react-icons/gr";
 import { IoHomeOutline } from "react-icons/io5";
 import { CiGlobe } from "react-icons/ci";
