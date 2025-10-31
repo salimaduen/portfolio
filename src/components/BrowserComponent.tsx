@@ -1,21 +1,75 @@
-import { IoMdClose } from "react-icons/io";
-import { getWindowBorderStyling } from "../utils/windowBorder";
+import React from "react";
+import { GrPrevious, GrNext, GrUp } from "react-icons/gr";
+import { IoHomeOutline } from "react-icons/io5";
+import { IoMdRefresh } from "react-icons/io";
+import { FiLock } from "react-icons/fi";
 
+import WindowChrome from "./WindowChrome";
+import WindowContainer from "./WindowContainer";
+import MenuBar from "./MenuBar";
+import NavControls from "./NavControls";
+import AddressField from "./AddressField";
 
-export default function BrowserComponent() {
-    return (
-        <div className={`flex flex-col fixed top-20 left-1/2 transform -translate-x-1/2 w-[80vw] h-[60vh] bg-white z-20 ${getWindowBorderStyling()}`}>
-            {/* Window top bar */}
-            <div className="flex bg-gradient-to-r from-[#001f3f] to-[#0074D9] to-[#1e90ff] w-full h-6 items-center justify-end px-1">
-                <div className="bg-[#C0C0C0] shadow-2xl border-l-[1px] border-l-gray-400 border-t-[1px] border-t-gray-300 border-r-[1px] border-r-gray-700 border-b-[1px] border-gray-800">
-                  <IoMdClose color="black" />  
-                </div>
-            </div>
-            {/* Content inside ? */}
-            <div className="m-2 text-black">
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-            </div>
-        </div>
-    );
+type BrowserProps = {
+  title?: string;
+  address?: string;
+  Page?: React.ComponentType<any>;
+  pageProps?: any;
+  content?: React.ReactNode;
+  url?: string;
+  onClose?: () => void;
+};
+
+export default function BrowserComponent({
+  title = "Browser",
+  address,
+  Page,
+  pageProps,
+  content,
+  url,
+  onClose,
+}: BrowserProps) {
+  const showIframe = Boolean(url && !Page && !content);
+
+  return (
+    <WindowContainer>
+      <WindowChrome title={title} variant="dark" onClose={onClose} />
+
+      <MenuBar items={["File", "Edit", "View", "Go", "Help"]} />
+
+      {/* Nav row */}
+      <div className="flex pl-2 space-x-2 bg-gray-200 w-full h-6 items-center">
+        <NavControls>
+          <GrPrevious color="gray" />
+          <GrNext color="gray" />
+          <GrUp color="gray" />
+          <IoHomeOutline color="gray" />
+        </NavControls>
+
+        <AddressField
+          leftIcon={<FiLock className="text-gray-500" />}
+          text={address || url || (Page ? "about:page" : content ? "about:content" : "about:blank")}
+          rightIcon={<IoMdRefresh color="gray" />}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 bg-white overflow-auto">
+        {Page ? (
+          <Page {...pageProps} />
+        ) : content ? (
+          content
+        ) : showIframe ? (
+          <iframe
+            title="Static page"
+            src={url}
+            className="w-full h-full"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+          />
+        ) : (
+          <div className="p-4 text-sm text-neutral-600">No content.</div>
+        )}
+      </div>
+    </WindowContainer>
+  );
 }
