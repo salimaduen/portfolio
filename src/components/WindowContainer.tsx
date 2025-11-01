@@ -30,7 +30,7 @@ export default function WindowContainer({
   const { pos, bindStart } = useDraggable({
     initial: initialPosition,
     disabled: !draggable || isMobile,
-    bounds: "viewport",
+    bounds: "none",
     getSize: () => {
       const el = containerRef.current;
       if (!el) return null;
