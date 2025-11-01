@@ -9,6 +9,7 @@ type WindowChromeProps = {
   onClose?: () => void;
   isMaximized?: boolean;
   onToggleMaximize?: () => void;
+  onMinimize?: () => void;          // 👈 NEW
 };
 
 function CircleWrapper({ children }: { children: React.ReactNode }) {
@@ -25,27 +26,20 @@ export default function WindowChrome({
   onClose,
   isMaximized = false,
   onToggleMaximize,
+  onMinimize,
 }: WindowChromeProps) {
-  const barColor =
-    variant === "dark" ? "bg-neutral-900 text-neutral-100" : "bg-gray-200 text-gray-700";
-
-  // do NOT start drag from controls
+  const barColor = variant === "dark" ? "bg-neutral-900 text-neutral-100" : "bg-gray-200 text-gray-700";
   const stop = (e: React.PointerEvent) => e.stopPropagation();
 
   return (
     <div className={`relative w-full h-6 ${barColor}`}>
-      {/* Drag region (exclude right controls area) */}
       <div className="absolute inset-y-0 left-0 right-24 z-20" data-window-drag-handle />
-
-      {/* Content layer */}
       <div className="relative z-10 flex w-full h-full items-center justify-end px-2">
-        <p className="absolute inset-0 text-center truncate select-none pointer-events-none">
-          {title}
-        </p>
+        <p className="absolute inset-0 text-center truncate select-none pointer-events-none">{title}</p>
 
         <div className="flex space-x-3" onPointerDown={stop}>
-          {/* Minimize (no-op for now; easy to wire later) */}
-          <div className="cursor-pointer" title="Minimize">
+          {/* Minimize */}
+          <div className="cursor-pointer" title="Minimize" onClick={onMinimize}>
             <CircleWrapper><FaRegWindowMinimize size={12} color="gray" /></CircleWrapper>
           </div>
 
