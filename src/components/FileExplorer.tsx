@@ -1,5 +1,7 @@
-import { IoMdRefresh } from "react-icons/io";
-import { FaFolder } from "react-icons/fa6";
+import React, { useState } from "react";
+import { VscChromeMaximize } from "react-icons/vsc";
+import { IoMdClose, IoMdRefresh } from "react-icons/io";
+import { FaRegWindowMinimize, FaFolder } from "react-icons/fa6";
 import { GrPrevious, GrNext, GrUp } from "react-icons/gr";
 import { IoHomeOutline } from "react-icons/io5";
 import { CiGlobe } from "react-icons/ci";
@@ -9,16 +11,46 @@ import WindowContainer from "./WindowContainer";
 import MenuBar from "./MenuBar";
 import NavControls from "./NavControls";
 import AddressField from "./AddressField";
-import WindowChrome from "./WindowChrome";
 
-export default function FileExplorer() {
+// reuse your existing CircleWrapper
+function CircleWrapper({ children }: { children: React.ReactNode }) {
+  return <div className="flex items-center justify-center bg-gray-300 w-5 h-5 rounded-full">{children}</div>;
+}
+
+export default function FileExplorer({ onClose }: { onClose?: () => void }) {
+  const [isMax, setIsMax] = useState(false);
   const fileExplorerBar = ["File", "Edit", "View", "Go", "Help"];
   const fileExplorerLocations = ["Documents", "Music", "Pictures", "Videos", "Downloads"];
 
+  // prevent drag when pressing the control cluster
+  const stopDrag = (e: React.PointerEvent) => e.stopPropagation();
+
   return (
-    <WindowContainer draggable zIndex={10}>
-      {/* Top bar (keep your exact layout/buttons) */}
-      <WindowChrome title="Home" variant="light" />
+    <WindowContainer draggable zIndex={10} maximized={isMax}>
+      {/* Top bar as your classic style */}
+      <div className="relative bg-gray-200 w-full h-6 px-2">
+        {/* Drag strip excluding the right controls */}
+        <div className="absolute inset-y-0 left-0 right-24 z-20" data-window-drag-handle />
+        {/* Content layer */}
+        <div className="relative z-10 flex w-full h-full items-center justify-end">
+          <p className="absolute inset-0 text-center text-gray-700 truncate select-none pointer-events-none">
+            Home
+          </p>
+          <div className="flex space-x-3" onPointerDown={stopDrag}>
+            <div className="cursor-pointer" title="Minimize">
+              <CircleWrapper><FaRegWindowMinimize size={12} color="gray" /></CircleWrapper>
+            </div>
+            <div className="cursor-pointer" title={isMax ? "Restore" : "Maximize"} onClick={() => setIsMax(v => !v)}>
+              <CircleWrapper>
+                {isMax ? <VscChromeMaximize color="gray" /> : <VscChromeMaximize color="gray" />}
+              </CircleWrapper>
+            </div>
+            <div className="cursor-pointer" title="Close" onClick={onClose}>
+              <CircleWrapper><IoMdClose color="gray" /></CircleWrapper>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <MenuBar items={fileExplorerBar} />
 
@@ -40,7 +72,6 @@ export default function FileExplorer() {
 
       {/* Body panes */}
       <div className="flex flex-row h-full text-black">
-        {/* Left sidebar */}
         <div className="w-[70%] h-full border-2">
           <p className="pl-1">Places</p>
           <div className="flex flex-col pl-2">
@@ -59,7 +90,6 @@ export default function FileExplorer() {
           </div>
         </div>
 
-        {/* Right content pane */}
         <div className="flex w-full border-2">
           <p className="text-black p-2">Second Box?</p>
         </div>

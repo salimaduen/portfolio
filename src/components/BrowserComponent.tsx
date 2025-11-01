@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { GrPrevious, GrNext, GrUp } from "react-icons/gr";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdRefresh } from "react-icons/io";
@@ -17,7 +17,7 @@ type BrowserProps = {
   pageProps?: any;
   content?: React.ReactNode;
   url?: string;
-  onClose?: () => void;
+  onClose?: () => void; // parent should unmount this window
 };
 
 export default function BrowserComponent({
@@ -29,11 +29,18 @@ export default function BrowserComponent({
   url,
   onClose,
 }: BrowserProps) {
+  const [isMax, setIsMax] = useState(false);
   const showIframe = Boolean(url && !Page && !content);
 
   return (
-    <WindowContainer draggable zIndex={20}>
-      <WindowChrome title={title} variant="dark" onClose={onClose} />
+    <WindowContainer draggable zIndex={20} maximized={isMax} maximizedWithinTopbarSelector="[data-desktop-topbar]">
+      <WindowChrome
+        title={title}
+        variant="dark"
+        onClose={onClose}
+        isMaximized={isMax}
+        onToggleMaximize={() => setIsMax((v) => !v)}
+      />
 
       <MenuBar items={["File", "Edit", "View", "Go", "Help"]} />
 
