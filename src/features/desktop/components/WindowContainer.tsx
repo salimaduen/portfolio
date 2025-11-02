@@ -19,7 +19,6 @@ type Props = {
   maximizedInset?: { top?: number; right?: number; bottom?: number; left?: number };
   maximizedWithinTopbarSelector?: string;
 
-  /** NEW: default size (when not maximized) */
   defaultSize?: Size;          // desktop/tablet
   mobileDefaultSize?: Size;    // mobile (optional; falls back to defaultSize)
 };

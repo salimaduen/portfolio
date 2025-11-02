@@ -2,45 +2,33 @@ import TopBar from "@features/desktop/components/TopBar";
 import DesktopSurface from "@features/desktop/components/DesktopSurface";
 import { Dock } from "@features/desktop";
 import { OSIcon } from "@app/ui";
+import { Window } from "@features/desktop"; // export this in your desktop barrel
 
 import { WindowManagerProvider, useWindows } from "@app/context/WindowManager";
 import { APP_CATALOG, AppId } from "@app/models/appCatalog";
 
-import { BrowserComponent } from "@features/browser";
-import { FileExplorer } from "@features/files";
+import BrowserView from "@features/browser/components/BrowserView";
+import FileExplorerView from "@features/files/components/FileExplorerView";
+import ExplorerTopBar from "@features/files/components/ExplorerTopBar"; // if you want the classic bar
+
 import ProjectsPage from "@app/pages/ProjectPage";
 
 function DesktopInner() {
-  const { get, open, close, toggleMinimize, focus } = useWindows();
+  const { open, focus } = useWindows();
 
-  // Desktop icons are independent of the Dock; define them here:
+  // Desktop icons
   const desktopIcons: AppId[] = ["resume", "github", "linkedin", "files"];
 
   const onOpen = (id: AppId) => {
-    if (id === "files") {
-      open("files");
-      focus("files");
-      return;
-    }
-    if (id === "github") {
-      window.open("https://github.com/salimaduen", "_blank");
-      return;
-    }
-    if (id === "linkedin") {
-      window.open("https://www.linkedin.com/in/salomon-aduen", "_blank");
-      return;
-    }
-    // Resume or others -> open Browser (you can route inside the Browser later)
-    open("browser");
-    focus("browser");
+    if (id === "files") { open("files"); focus("files"); return; }
+    if (id === "github") { window.open("https://github.com/salimaduen", "_blank"); return; }
+    if (id === "linkedin") { window.open("https://www.linkedin.com/in/salomon-aduen", "_blank"); return; }
+    open("browser"); focus("browser");
   };
 
-  const bringToFront = (id: AppId) => focus(id);
-
-    return (
+  return (
     <div className="flex flex-col h-screen w-screen">
       <TopBar dataAttribute="data-desktop-topbar" />
-
       <DesktopSurface>
         <Dock autoTopFromSelector="[data-desktop-topbar]" pinned={["browser", "files"]} />
 
@@ -64,36 +52,24 @@ function DesktopInner() {
           })}
         </div>
 
-        {/* Browser window */}
-        {(() => {
-          const s = get("browser");
-          if (!s.open || s.minimized) return null;
-          return (
-            <div onMouseDown={() => bringToFront("browser")} style={{ zIndex: s.z }}>
-              <BrowserComponent
-                title="home"
-                address="about:projects"
-                Page={ProjectsPage}
-                onClose={() => close("browser")}
-                onMinimize={() => toggleMinimize("browser")}  
-              />
-            </div>
-          );
-        })()}
+        {/* Windows (one-liners now) */}
+        <Window id="browser" title="home" variant="dark">
+          <BrowserView address="about:projects" Page={ProjectsPage} />
+        </Window>
 
-        {/* Files window */}
-        {(() => {
-          const s = get("files");
-          if (!s.open || s.minimized) return null;
-          return (
-            <div onMouseDown={() => bringToFront("files")} style={{ zIndex: s.z }}>
-              <FileExplorer
-                onClose={() => close("files")}
-                onMinimize={() => toggleMinimize("files")} 
-              />
-            </div>
-          );
-        })()}
+        <Window
+          id="files"
+          title="Home"
+          renderTopBar={({ onClose, onMinimize, onToggleMaximize }) => (
+            <ExplorerTopBar
+              onClose={onClose}
+              onMinimize={onMinimize}
+              onToggleMaximize={onToggleMaximize}
+            />
+          )}
+        >
+          <FileExplorerView />
+        </Window>
       </DesktopSurface>
     </div>
   );

@@ -1,56 +1,30 @@
-// Old way of creating browser component
-import React, { useState } from "react";
+import React from "react";
 import { GrPrevious, GrNext, GrUp } from "react-icons/gr";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdRefresh } from "react-icons/io";
 import { FiLock } from "react-icons/fi";
+import { MenuBar, NavControls, AddressField } from "@app/ui";
 
-import { WindowChrome } from "@features/desktop";
-import { WindowContainer } from "@features/desktop";
-import { MenuBar } from "@app/ui";
-import { NavControls } from "@app/ui";
-import { AddressField } from "@app/ui";
-
-type BrowserProps = {
+type BrowserViewProps = {
   title?: string;
   address?: string;
   Page?: React.ComponentType<any>;
   pageProps?: any;
   content?: React.ReactNode;
   url?: string;
-  onClose?: () => void;
-  onMinimize?: () => void;
 };
 
-export default function BrowserComponent({
-  title = "Browser",
+export default function BrowserView({
   address,
   Page,
   pageProps,
   content,
   url,
-  onClose,
-  onMinimize,
-}: BrowserProps) {
-  const [isMax, setIsMax] = useState(false);
+}: BrowserViewProps) {
   const showIframe = Boolean(url && !Page && !content);
 
   return (
-    <WindowContainer
-      draggable
-      zIndex={20}
-      maximized={isMax}
-      maximizedWithinTopbarSelector="[data-desktop-topbar]"
-    >
-      <WindowChrome
-        title={title}
-        variant="dark"
-        onClose={onClose}
-        isMaximized={isMax}
-        onToggleMaximize={() => setIsMax((v) => !v)}
-        onMinimize={onMinimize}     // 👈 pass it through
-      />
-
+    <>
       <MenuBar items={["File", "Edit", "View", "Go", "Help"]} />
 
       {/* Nav row */}
@@ -86,6 +60,6 @@ export default function BrowserComponent({
           <div className="p-4 text-sm text-neutral-600">No content.</div>
         )}
       </div>
-    </WindowContainer>
+    </>
   );
 }

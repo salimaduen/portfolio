@@ -1,3 +1,4 @@
+// Old way of creating FileExplorer controller
 import React, { useState } from "react";
 import { VscChromeMaximize } from "react-icons/vsc";
 import { IoMdClose, IoMdRefresh } from "react-icons/io";
@@ -29,7 +30,7 @@ export default function FileExplorer({ onClose, onMinimize }: Props) {
   const stopDrag = (e: React.PointerEvent) => e.stopPropagation();
 
   return (
-    <WindowContainer draggable zIndex={10} maximized={isMax}>
+    <WindowContainer draggable zIndex={10} maximized={isMax} maximizedWithinTopbarSelector="[data-desktop-topbar]">
       {/* Top bar */}
       <div className="relative bg-gray-200 w-full h-6 px-2">
         <div className="absolute inset-y-0 left-0 right-24 z-20" data-window-drag-handle />

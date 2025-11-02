@@ -47,7 +47,7 @@ export default function Dock({
   };
 
   return (
-    <aside className={`fixed left-0 z-[5] ${className}`} style={{ top, bottom: 0, width: widthPx }}>
+    <aside data-desktop-dock className={`fixed left-0 z-[5] ${className}`} style={{ top, bottom: 0, width: widthPx }}>
       <div className="h-full w-full bg-black/30 backdrop-blur-sm overflow-hidden ring-1 ring-black/25 shadow-lg flex flex-col py-2">
         <div className="flex-1 w-full flex flex-col items-center overflow-auto">
           {all.map((id) => {
