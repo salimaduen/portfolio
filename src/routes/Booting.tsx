@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import TerminalLineLoading from "../components/TerminalLineLoading";
+import TerminalLineLoading from "../ui/terminal/TerminalLineLoading";
 
 export interface bootingProps {
   nextStage: () => void;

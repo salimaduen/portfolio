@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import TerminalLine from "../components/TerminalLine";
+import TerminalLine from "../ui/terminal/TerminalLine";
 
 export interface LoginProps { nextStage: () => void; }
 

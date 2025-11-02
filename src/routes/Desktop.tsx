@@ -1,57 +1,106 @@
-import { IoMdArrowDropdown } from "react-icons/io";
-import { BsThreeDots } from "react-icons/bs";
-import { RiShutDownLine } from "react-icons/ri";
-import { LuNetwork } from "react-icons/lu";
-import { FaVolumeHigh } from "react-icons/fa6";
-import IconComponent from "../components/IconComponent";
-import { getFormattedDate } from "../utils/dateUtils";
-import FileExplorer from "../components/FileExplorer";
-import BrowserComponent from "../components/BrowserComponent";
-import { useState } from "react";
+import React from "react";
+import TopBar from "../features/desktop/components/TopBar";
+import DesktopSurface from "../features/desktop/components/DesktopSurface";
+import { Dock } from "../features/desktop";
+import OSIcon from "../ui/OSIcon";
 
-export default function Desktop() {
-    const [f, setF ] = useState<boolean>(false);
+import { WindowManagerProvider, useWindows } from "../context/WindowManager";
+import { APP_CATALOG, AppId } from "../models/appCatalog";
 
-    const handleClick = () => {
-        setF(true);
+import { BrowserComponent } from "../features/browser";
+import { FileExplorer } from "../features/files";
+import ProjectsPage from "../pages/ProjectPage";
+
+function DesktopInner() {
+  const { get, open, close, toggleMinimize, focus } = useWindows();
+
+  // Desktop icons are independent of the Dock; define them here:
+  const desktopIcons: AppId[] = ["resume", "github", "linkedin", "files"];
+
+  const onOpen = (id: AppId) => {
+    if (id === "files") {
+      open("files");
+      focus("files");
+      return;
     }
+    if (id === "github") {
+      window.open("https://github.com/salimaduen", "_blank");
+      return;
+    }
+    if (id === "linkedin") {
+      window.open("https://www.linkedin.com/in/salomon-aduen", "_blank");
+      return;
+    }
+    // Resume or others -> open Browser (you can route inside the Browser later)
+    open("browser");
+    focus("browser");
+  };
 
-    return (
-        <div className="flex flex-col h-screen w-screen">
-            {/* Desktop top bar - Icons like wifi, shutdown, etc */}
-            <div className="flex flex-row h-8 w-full items-center justify-between bg-black text-white">
-                <div className="pl-2">
+  const bringToFront = (id: AppId) => focus(id);
 
-                </div>
-                <div className="flex flex-row items-center space-x-4">
-                    <BsThreeDots />
-                    <p>{getFormattedDate()}</p>
-                    <div className="flex flex-row space-x-3 pr-2">
-                        <LuNetwork />
-                        <FaVolumeHigh />
-                        <RiShutDownLine />
-                        <IoMdArrowDropdown />
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="flex flex-col h-screen w-screen">
+      <TopBar dataAttribute="data-desktop-topbar" />
 
-            {/* Desktop contents - Icons, file explorer, etc */}
-            <div className='bg-ubuntu-wallpaper-phone bg-cover w-full h-full'>
-                <div className="">
-                    {true && (
-                       <FileExplorer /> 
-                    )}
+      <DesktopSurface>
+        <Dock autoTopFromSelector="[data-desktop-topbar]" pinned={["browser", "files"]} />
+
+        {/* Desktop icons (independent list) */}
+        <div className="absolute left-16 top-4 space-y-4">
+          {desktopIcons.map((id) => {
+            const meta = APP_CATALOG[id];
+            return (
+              <div
+                key={id}
+                onClick={() => onOpen(id)}
+                className="flex flex-col items-center w-24 text-white select-none cursor-pointer hover:brightness-110 transition"
+                title={meta.name}
+              >
+                <div className="flex items-center justify-center w-16 h-16 relative">
+                  <OSIcon type={meta.desktopIconType} variant="desktop" sizePx={64} />
                 </div>
-                <div>
-                    {true && (
-                       <BrowserComponent /> 
-                    )}
-                </div>
-                <div className="pt-4 pl-2">
-                    <IconComponent iconType={"PDF"} iconName={"folder"} handleClick={handleClick}/>
-                </div>
-            </div>
+                <p className="mt-2 text-center text-sm drop-shadow-sm">{meta.name}</p>
+              </div>
+            );
+          })}
         </div>
 
-    );
+        {/* WINDOWS — render only if open & not minimized */}
+        {(() => {
+          const s = get("browser");
+          if (!s.open || s.minimized) return null;
+          return (
+            <div onMouseDown={() => bringToFront("browser")} style={{ zIndex: s.z }}>
+              <BrowserComponent
+                title="home"
+                address="about:projects"
+                Page={ProjectsPage}
+                onClose={() => close("browser")}
+              />
+            </div>
+          );
+        })()}
+
+        {(() => {
+          const s = get("files");
+          if (!s.open || s.minimized) return null;
+          return (
+            <div onMouseDown={() => bringToFront("files")} style={{ zIndex: s.z }}>
+              <FileExplorer
+                onClose={() => close("files")}
+              />
+            </div>
+          );
+        })()}
+      </DesktopSurface>
+    </div>
+  );
+}
+
+export default function Desktop() {
+  return (
+    <WindowManagerProvider>
+      <DesktopInner />
+    </WindowManagerProvider>
+  );
 }

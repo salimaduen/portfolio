@@ -4,11 +4,11 @@ import { IoHomeOutline } from "react-icons/io5";
 import { IoMdRefresh } from "react-icons/io";
 import { FiLock } from "react-icons/fi";
 
-import WindowChrome from "./WindowChrome";
-import WindowContainer from "./WindowContainer";
-import MenuBar from "./MenuBar";
-import NavControls from "./NavControls";
-import AddressField from "./AddressField";
+import { WindowChrome } from "../../desktop";
+import { WindowContainer } from "../../desktop";
+import { MenuBar } from "../../../ui";
+import { NavControls } from "../../../ui";
+import { AddressField } from "../../../ui";
 
 type BrowserProps = {
   title?: string;

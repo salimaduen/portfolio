@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { getWindowBorderStyling } from "../utils/windowBorder";
-import { useDraggable } from "../hooks/useDraggable";
+import { getWindowBorderStyling } from "../../../utils/windowBorder"; 
+import { useDraggable } from "../../../hooks/useDraggable"; 
 
 type Size = { width: number | string; height: number | string };
 
