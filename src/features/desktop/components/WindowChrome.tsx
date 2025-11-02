@@ -9,7 +9,7 @@ type WindowChromeProps = {
   onClose?: () => void;
   isMaximized?: boolean;
   onToggleMaximize?: () => void;
-  onMinimize?: () => void;          // 👈 NEW
+  onMinimize?: () => void;
 };
 
 function CircleWrapper({ children }: { children: React.ReactNode }) {

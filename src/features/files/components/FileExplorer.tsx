@@ -12,39 +12,43 @@ import { MenuBar } from "@app/ui";
 import { NavControls } from "@app/ui";
 import { AddressField } from "@app/ui";
 
-// reuse your existing CircleWrapper
 function CircleWrapper({ children }: { children: React.ReactNode }) {
   return <div className="flex items-center justify-center bg-gray-300 w-5 h-5 rounded-full">{children}</div>;
 }
 
-export default function FileExplorer({ onClose }: { onClose?: () => void }) {
+type Props = {
+  onClose?: () => void;
+  onMinimize?: () => void;
+};
+
+export default function FileExplorer({ onClose, onMinimize }: Props) {
   const [isMax, setIsMax] = useState(false);
   const fileExplorerBar = ["File", "Edit", "View", "Go", "Help"];
   const fileExplorerLocations = ["Documents", "Music", "Pictures", "Videos", "Downloads"];
 
-  // prevent drag when pressing the control cluster
   const stopDrag = (e: React.PointerEvent) => e.stopPropagation();
 
   return (
     <WindowContainer draggable zIndex={10} maximized={isMax}>
-      {/* Top bar as your classic style */}
+      {/* Top bar */}
       <div className="relative bg-gray-200 w-full h-6 px-2">
-        {/* Drag strip excluding the right controls */}
         <div className="absolute inset-y-0 left-0 right-24 z-20" data-window-drag-handle />
-        {/* Content layer */}
         <div className="relative z-10 flex w-full h-full items-center justify-end">
           <p className="absolute inset-0 text-center text-gray-700 truncate select-none pointer-events-none">
             Home
           </p>
           <div className="flex space-x-3" onPointerDown={stopDrag}>
-            <div className="cursor-pointer" title="Minimize">
+            {/* Minimize */}
+            <div className="cursor-pointer" title="Minimize" onClick={onMinimize}>
               <CircleWrapper><FaRegWindowMinimize size={12} color="gray" /></CircleWrapper>
             </div>
+
+            {/* Maximize/Restore */}
             <div className="cursor-pointer" title={isMax ? "Restore" : "Maximize"} onClick={() => setIsMax(v => !v)}>
-              <CircleWrapper>
-                {isMax ? <VscChromeMaximize color="gray" /> : <VscChromeMaximize color="gray" />}
-              </CircleWrapper>
+              <CircleWrapper><VscChromeMaximize color="gray" /></CircleWrapper>
             </div>
+
+            {/* Close */}
             <div className="cursor-pointer" title="Close" onClick={onClose}>
               <CircleWrapper><IoMdClose color="gray" /></CircleWrapper>
             </div>

@@ -17,7 +17,8 @@ type BrowserProps = {
   pageProps?: any;
   content?: React.ReactNode;
   url?: string;
-  onClose?: () => void; // parent should unmount this window
+  onClose?: () => void;
+  onMinimize?: () => void;
 };
 
 export default function BrowserComponent({
@@ -28,18 +29,25 @@ export default function BrowserComponent({
   content,
   url,
   onClose,
+  onMinimize,
 }: BrowserProps) {
   const [isMax, setIsMax] = useState(false);
   const showIframe = Boolean(url && !Page && !content);
 
   return (
-    <WindowContainer draggable zIndex={20} maximized={isMax} maximizedWithinTopbarSelector="[data-desktop-topbar]">
+    <WindowContainer
+      draggable
+      zIndex={20}
+      maximized={isMax}
+      maximizedWithinTopbarSelector="[data-desktop-topbar]"
+    >
       <WindowChrome
         title={title}
         variant="dark"
         onClose={onClose}
         isMaximized={isMax}
         onToggleMaximize={() => setIsMax((v) => !v)}
+        onMinimize={onMinimize}     // 👈 pass it through
       />
 
       <MenuBar items={["File", "Edit", "View", "Go", "Help"]} />

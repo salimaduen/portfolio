@@ -37,14 +37,14 @@ function DesktopInner() {
 
   const bringToFront = (id: AppId) => focus(id);
 
-  return (
+    return (
     <div className="flex flex-col h-screen w-screen">
       <TopBar dataAttribute="data-desktop-topbar" />
 
       <DesktopSurface>
         <Dock autoTopFromSelector="[data-desktop-topbar]" pinned={["browser", "files"]} />
 
-        {/* Desktop icons (independent list) */}
+        {/* Desktop icons */}
         <div className="absolute left-16 top-4 space-y-4">
           {desktopIcons.map((id) => {
             const meta = APP_CATALOG[id];
@@ -64,7 +64,7 @@ function DesktopInner() {
           })}
         </div>
 
-        {/* WINDOWS — render only if open & not minimized */}
+        {/* Browser window */}
         {(() => {
           const s = get("browser");
           if (!s.open || s.minimized) return null;
@@ -75,11 +75,13 @@ function DesktopInner() {
                 address="about:projects"
                 Page={ProjectsPage}
                 onClose={() => close("browser")}
+                onMinimize={() => toggleMinimize("browser")}  
               />
             </div>
           );
         })()}
 
+        {/* Files window */}
         {(() => {
           const s = get("files");
           if (!s.open || s.minimized) return null;
@@ -87,6 +89,7 @@ function DesktopInner() {
             <div onMouseDown={() => bringToFront("files")} style={{ zIndex: s.z }}>
               <FileExplorer
                 onClose={() => close("files")}
+                onMinimize={() => toggleMinimize("files")} 
               />
             </div>
           );
