@@ -1,14 +1,16 @@
 import React, { useState } from "react";
+import { AppId } from "@app/models/appCatalog";
 import { useWindows } from "@app/context/WindowManager";
-import { WindowContainer } from "@features/desktop";
-import { WindowChrome } from "@features/desktop";
+import {WindowContainer} from "@features/desktop";
+import {WindowChrome} from "@features/desktop";
 
+/** Keep in sync with WindowContainer's type for convenience */
 type SelectorInset =
   | number
   | { selector: string; edge: "top" | "left" | "right" | "bottom" };
 
 type Props = {
-  id: string;
+  id: AppId;
   title: string;
   variant?: "light" | "dark";
   renderTopBar?: (controls: {
@@ -49,6 +51,7 @@ export default function Window({
   const onToggleMaximize = () => setIsMax((v) => !v);
   const bringToFront = () => focus(id);
 
+  // Defaults: avoid covering top bar and the left dock
   const effectiveInsets = {
     top:
       maximizedInsets?.top ??
@@ -68,7 +71,8 @@ export default function Window({
         maximized={isMax}
         maximizedInsets={effectiveInsets}
         maximizedWithinTopbarSelector={maximizedWithinTopbarSelector}
-        position={s.pos} 
+        /** Controlled position from WindowManager (persisted across minimize/restore) */
+        position={s.pos}
         onPositionChange={(p) => setPosition(id, p)}
       >
         {renderTopBar ? (

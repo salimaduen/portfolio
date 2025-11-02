@@ -2,14 +2,14 @@ import TopBar from "@features/desktop/components/TopBar";
 import DesktopSurface from "@features/desktop/components/DesktopSurface";
 import { Dock } from "@features/desktop";
 import { OSIcon } from "@app/ui";
-import { Window } from "@features/desktop"; // export this in your desktop barrel
+import { Window } from "@features/desktop";
 
 import { WindowManagerProvider, useWindows } from "@app/context/WindowManager";
 import { APP_CATALOG, AppId } from "@app/models/appCatalog";
 
 import BrowserView from "@features/browser/components/BrowserView";
 import FileExplorerView from "@features/files/components/FileExplorerView";
-import ExplorerTopBar from "@features/files/components/ExplorerTopBar"; // if you want the classic bar
+import ExplorerTopBar from "@features/files/components/ExplorerTopBar";
 
 import ProjectsPage from "@app/pages/ProjectPage";
 
