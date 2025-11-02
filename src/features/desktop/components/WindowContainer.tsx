@@ -1,6 +1,10 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import { getWindowBorderStyling } from "@utils/windowBorder"; 
-import { useDraggable } from "@app/hooks/useDraggable"; 
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { getWindowBorderStyling } from "@utils/windowBorder";
+import { useDraggable } from "@app/hooks/useDraggable";
+
+type SelectorInset =
+  | number
+  | { selector: string; edge: "top" | "left" | "right" | "bottom" };
 
 type Size = { width: number | string; height: number | string };
 
@@ -16,7 +20,18 @@ type Props = {
 
   /** Maximize */
   maximized?: boolean;
+
+  maximizedInsets?: Partial<{
+    top: SelectorInset;
+    right: SelectorInset;
+    bottom: SelectorInset;
+    left: SelectorInset;
+  }>;
+
+  /** Back-compat: numeric insets */
   maximizedInset?: { top?: number; right?: number; bottom?: number; left?: number };
+
+  /** Back-compat: if provided, treated as { top: {selector, edge:"top"} } */
   maximizedWithinTopbarSelector?: string;
 
   defaultSize?: Size;          // desktop/tablet
@@ -36,8 +51,11 @@ export default function WindowContainer({
   dragHandleSelector = "[data-window-drag-handle]",
   initialPosition = { x: 96, y: 96 },
   maximized = false,
-  maximizedInset,
-  maximizedWithinTopbarSelector,
+
+  maximizedInsets,
+  maximizedInset,                 // back-compat numeric
+  maximizedWithinTopbarSelector,  // back-compat selector (top)
+
   defaultSize = { width: "80vw", height: "60vh" },
   mobileDefaultSize = { width: "96vw", height: "78vh" },
 }: Props) {
@@ -51,7 +69,8 @@ export default function WindowContainer({
   const { pos, bindStart } = useDraggable({
     initial: initialPosition,
     disabled: !draggable || isMobile || maximized,
-    bounds: isMobile ? "viewport" : "none",   // free-drag desktop, clamped mobile
+    // free-drag on desktop, clamp on mobile
+    bounds: isMobile ? "viewport" : "none",
     getSize: () => {
       const el = containerRef.current;
       if (!el) return null;
@@ -70,21 +89,75 @@ export default function WindowContainer({
     return () => handle.removeEventListener("pointerdown", onPointerDown);
   }, [bindStart, dragHandleSelector]);
 
-  // Compute insets when maximized to avoid covering your desktop top bar
-  const inset = React.useMemo(() => {
-    let top = maximizedInset?.top ?? 0;
-    let right = maximizedInset?.right ?? 0;
-    let bottom = maximizedInset?.bottom ?? 0;
-    let left = maximizedInset?.left ?? 0;
+  // --- Resolve insets when maximized (supports selector-based & numeric) ---
+  const [insets, setInsets] = useState({ top: 0, right: 0, bottom: 0, left: 0 });
 
-    if (maximized && maximizedWithinTopbarSelector) {
-      const el = document.querySelector(maximizedWithinTopbarSelector) as HTMLElement | null;
-      if (el && maximizedInset?.top == null) {
-        top = el.getBoundingClientRect().height;
+  useEffect(() => {
+    // Convert a SelectorInset to pixels
+    const toPx = (s?: SelectorInset): number => {
+      if (!s) return 0;
+      if (typeof s === "number") return s;
+      const el = document.querySelector(s.selector) as HTMLElement | null;
+      if (!el) return 0;
+      const rect = el.getBoundingClientRect();
+      switch (s.edge) {
+        case "top":
+        case "bottom":
+          return rect.height;
+        case "left":
+        case "right":
+          return rect.width;
+        default:
+          return 0;
       }
-    }
-    return { top, right, bottom, left };
-  }, [maximized, maximizedInset, maximizedWithinTopbarSelector]);
+    };
+
+    const mergedTop: SelectorInset | undefined =
+      maximizedInsets?.top ??
+      (maximizedWithinTopbarSelector
+        ? { selector: maximizedWithinTopbarSelector, edge: "top" }
+        : undefined) ??
+      (maximizedInset?.top ?? 0);
+
+    const mergedRight: SelectorInset | undefined =
+      maximizedInsets?.right ?? (maximizedInset?.right ?? 0);
+
+    const mergedBottom: SelectorInset | undefined =
+      maximizedInsets?.bottom ?? (maximizedInset?.bottom ?? 0);
+
+    const mergedLeft: SelectorInset | undefined =
+      maximizedInsets?.left ?? (maximizedInset?.left ?? 0);
+
+    const compute = () =>
+      setInsets({
+        top: toPx(mergedTop),
+        right: toPx(mergedRight),
+        bottom: toPx(mergedBottom),
+        left: toPx(mergedLeft),
+      });
+
+    compute();
+
+    // Recompute on resize & when observed elements change size
+    const ro = new ResizeObserver(compute);
+
+    const observe = (s?: SelectorInset) => {
+      if (!s || typeof s === "number") return;
+      const el = document.querySelector(s.selector) as HTMLElement | null;
+      if (el) ro.observe(el);
+    };
+
+    observe(mergedTop);
+    observe(mergedRight);
+    observe(mergedBottom);
+    observe(mergedLeft);
+
+    window.addEventListener("resize", compute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", compute);
+    };
+  }, [maximizedInsets, maximizedInset, maximizedWithinTopbarSelector]);
 
   // Choose default size per device (when NOT maximized)
   const baseSize = isMobile ? mobileDefaultSize : defaultSize;
@@ -104,17 +177,29 @@ export default function WindowContainer({
     ${className}
   `;
 
+  // When maximized, fill viewport minus insets; otherwise position by drag pos
+  const positionedStyle: React.CSSProperties = maximized
+    ? {
+        top: insets.top,
+        left: insets.left,
+        right: insets.right,
+        bottom: insets.bottom,
+        width: `calc(100vw - ${insets.left + insets.right}px)`,
+        height: `calc(100vh - ${insets.top + insets.bottom}px)`,
+        transform: "none",
+      }
+    : {
+        top: isMobile ? undefined : pos.y,
+        left: isMobile ? undefined : pos.x,
+      };
+
   return (
     <div
       ref={containerRef}
       className={baseClasses}
       style={{
         zIndex,
-        // position: free drag (desktop) or centered mobile; maximized uses insets
-        top: maximized ? inset.top : (isMobile ? undefined : pos.y),
-        left: maximized ? inset.left : (isMobile ? undefined : pos.x),
-        right: maximized ? inset.right : undefined,
-        bottom: maximized ? inset.bottom : undefined,
+        ...positionedStyle,
         ...sizeStyle,
       }}
       role="dialog"

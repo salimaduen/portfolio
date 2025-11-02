@@ -7,14 +7,13 @@ export type IconTypes = "Linkedin" | "Generic" | "GitHub" | "PDF" | "Browser" | 
 type Props = {
   type: IconTypes;
   variant?: "desktop" | "dock";
-  /** Explicit icon size in px (independent of parent) */
   sizePx?: number;
   className?: string;
 };
 
 export default function OSIcon({ type, variant = "desktop", sizePx, className }: Props) {
   const isDock = variant === "dock";
-  const px = sizePx ?? (isDock ? 34 : 64); // sensible defaults
+  const px = sizePx ?? (isDock ? 34 : 64);
 
   switch (type) {
     case "Linkedin":
@@ -26,7 +25,7 @@ export default function OSIcon({ type, variant = "desktop", sizePx, className }:
     case "Files":
       return <img src={folder} alt="Folder" style={{ width: px, height: px }} className={className} />;
     case "Browser":
-      // placeholder circle; swap to real logo later if desired
+      // placeholder circle; swap to real logo later
       return (
         <div
           className={className}
