@@ -7,6 +7,7 @@ type SelectorInset =
   | { selector: string; edge: "top" | "left" | "right" | "bottom" };
 
 type Size = { width: number | string; height: number | string };
+type XY = { x: number; y: number };
 
 type Props = {
   children: React.ReactNode;
@@ -16,7 +17,15 @@ type Props = {
   /** Dragging */
   draggable?: boolean;
   dragHandleSelector?: string;
-  initialPosition?: { x: number; y: number };
+
+  /** Uncontrolled initial position (used if no `position` is provided) */
+  initialPosition?: XY;
+
+  /** Controlled position (when provided, WindowContainer renders at this exact pos) */
+  position?: XY;
+
+  /** Called on drag move; useful for persisting to WindowManager */
+  onPositionChange?: (pos: XY) => void;
 
   /** Maximize */
   maximized?: boolean;
@@ -50,6 +59,8 @@ export default function WindowContainer({
   draggable = true,
   dragHandleSelector = "[data-window-drag-handle]",
   initialPosition = { x: 96, y: 96 },
+  position, 
+  onPositionChange,
   maximized = false,
 
   maximizedInsets,
@@ -66,16 +77,29 @@ export default function WindowContainer({
     []
   );
 
-  const { pos, bindStart } = useDraggable({
-    initial: initialPosition,
+  // Internal (uncontrolled) position state, used only when `position` prop is NOT provided
+  const [uncontrolledPos, setUncontrolledPos] = useState<XY>(initialPosition);
+
+  const isControlled = !!position;
+  const currentPos = isControlled ? (position as XY) : uncontrolledPos;
+
+  const { bindStart } = useDraggable({
+    initial: currentPos,
     disabled: !draggable || isMobile || maximized,
-    // free-drag on desktop, clamp on mobile
-    bounds: isMobile ? "viewport" : "none",
+    bounds: isMobile ? "viewport" : "none", // free-drag desktop, clamped mobile
     getSize: () => {
       const el = containerRef.current;
       if (!el) return null;
       const rect = el.getBoundingClientRect();
       return { width: rect.width, height: rect.height };
+    },
+    onMove: (next) => {
+      if (isControlled) {
+        onPositionChange?.(next);           // parent owns the state
+      } else {
+        setUncontrolledPos(next);           // local state
+        onPositionChange?.(next);           // (optional) let parent know too
+      }
     },
   });
 
@@ -93,7 +117,6 @@ export default function WindowContainer({
   const [insets, setInsets] = useState({ top: 0, right: 0, bottom: 0, left: 0 });
 
   useEffect(() => {
-    // Convert a SelectorInset to pixels
     const toPx = (s?: SelectorInset): number => {
       if (!s) return 0;
       if (typeof s === "number") return s;
@@ -138,9 +161,7 @@ export default function WindowContainer({
 
     compute();
 
-    // Recompute on resize & when observed elements change size
     const ro = new ResizeObserver(compute);
-
     const observe = (s?: SelectorInset) => {
       if (!s || typeof s === "number") return;
       const el = document.querySelector(s.selector) as HTMLElement | null;
@@ -162,9 +183,8 @@ export default function WindowContainer({
   // Choose default size per device (when NOT maximized)
   const baseSize = isMobile ? mobileDefaultSize : defaultSize;
 
-  // Inline styles for width/height so windows always have a default size
   const sizeStyle: React.CSSProperties = maximized
-    ? {} // maximized uses insets; size auto-fills
+    ? {}
     : {
         width: toCssSize(baseSize.width),
         height: toCssSize(baseSize.height),
@@ -177,7 +197,6 @@ export default function WindowContainer({
     ${className}
   `;
 
-  // When maximized, fill viewport minus insets; otherwise position by drag pos
   const positionedStyle: React.CSSProperties = maximized
     ? {
         top: insets.top,
@@ -189,8 +208,8 @@ export default function WindowContainer({
         transform: "none",
       }
     : {
-        top: isMobile ? undefined : pos.y,
-        left: isMobile ? undefined : pos.x,
+        top: isMobile ? undefined : currentPos.y,
+        left: isMobile ? undefined : currentPos.x,
       };
 
   return (
