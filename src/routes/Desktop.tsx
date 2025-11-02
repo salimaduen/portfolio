@@ -12,6 +12,7 @@ import FileExplorerView from "@features/files/components/FileExplorerView";
 import ExplorerTopBar from "@features/files/components/ExplorerTopBar";
 
 import ProjectsPage from "@app/pages/ProjectPage";
+import SelectionArea from "@app/features/desktop/components/SelectionArea";
 
 function DesktopInner() {
   const { open, focus } = useWindows();
@@ -30,6 +31,7 @@ function DesktopInner() {
     <div className="flex flex-col h-screen w-screen">
       <TopBar dataAttribute="data-desktop-topbar" />
       <DesktopSurface>
+        <SelectionArea className="z-[1]"/>
         <Dock autoTopFromSelector="[data-desktop-topbar]" pinned={["browser", "files"]} />
 
         {/* Desktop icons */}

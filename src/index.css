@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent accidental text selection on desktop areas */
+[data-desktop-root],
+[data-desktop-topbar],
+[data-desktop-dock],
+[data-window-container] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Re-enable inside windows where text editing is expected (like browser content) */
+[data-window-content-selectable] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
 @font-face {
   font-family: "CP437";
   src: url(./assets/fonts/PerfectDOSVGA437.ttf) format('truetype');

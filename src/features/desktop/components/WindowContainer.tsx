@@ -215,6 +215,7 @@ export default function WindowContainer({
   return (
     <div
       ref={containerRef}
+      data-window-container
       className={baseClasses}
       style={{
         zIndex,
