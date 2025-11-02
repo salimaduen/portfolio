@@ -3,8 +3,8 @@ import { RiShutDownLine } from "react-icons/ri";
 import { LuNetwork } from "react-icons/lu";
 import { FaVolumeHigh } from "react-icons/fa6";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { useClock } from "../../../hooks/useClock";
-import { formatTopbarTime } from "../../../utils/dateUtils";
+import { useClock } from "@app/hooks/useClock";
+import { formatTopbarTime } from "@utils/dateUtils";
 
 type Props = {
   /** Pass a data attribute name to mark this as the desktop topbar (for Dock/window insets) */

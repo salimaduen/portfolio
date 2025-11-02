@@ -7,10 +7,10 @@ import { IoHomeOutline } from "react-icons/io5";
 import { CiGlobe } from "react-icons/ci";
 
 import FileExplorerPlacesLocation from "./FileExplorerPlacesLocation";
-import { WindowContainer } from "../../desktop";
-import { MenuBar } from "../../../ui";
-import { NavControls } from "../../../ui";
-import { AddressField } from "../../../ui";
+import { WindowContainer } from "@features/desktop";
+import { MenuBar } from "@app/ui";
+import { NavControls } from "@app/ui";
+import { AddressField } from "@app/ui";
 
 // reuse your existing CircleWrapper
 function CircleWrapper({ children }: { children: React.ReactNode }) {

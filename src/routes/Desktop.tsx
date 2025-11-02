@@ -1,15 +1,14 @@
-import React from "react";
-import TopBar from "../features/desktop/components/TopBar";
-import DesktopSurface from "../features/desktop/components/DesktopSurface";
-import { Dock } from "../features/desktop";
-import OSIcon from "../ui/OSIcon";
+import TopBar from "@features/desktop/components/TopBar";
+import DesktopSurface from "@features/desktop/components/DesktopSurface";
+import { Dock } from "@features/desktop";
+import { OSIcon } from "@app/ui";
 
-import { WindowManagerProvider, useWindows } from "../context/WindowManager";
-import { APP_CATALOG, AppId } from "../models/appCatalog";
+import { WindowManagerProvider, useWindows } from "@app/context/WindowManager";
+import { APP_CATALOG, AppId } from "@app/models/appCatalog";
 
-import { BrowserComponent } from "../features/browser";
-import { FileExplorer } from "../features/files";
-import ProjectsPage from "../pages/ProjectPage";
+import { BrowserComponent } from "@features/browser";
+import { FileExplorer } from "@features/files";
+import ProjectsPage from "@app/pages/ProjectPage";
 
 function DesktopInner() {
   const { get, open, close, toggleMinimize, focus } = useWindows();

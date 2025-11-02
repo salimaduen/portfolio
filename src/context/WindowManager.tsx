@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
-import type { AppId } from "../models/appCatalog";
+import type { AppId } from "@/models/appCatalog";
 
 export type WinState = { open: boolean; minimized: boolean; z: number };
 type WindowMap = Partial<Record<AppId, WinState>>;

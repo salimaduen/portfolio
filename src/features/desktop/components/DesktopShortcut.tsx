@@ -1,4 +1,4 @@
-import { APP_CATALOG, AppId } from "../../../models/appCatalog";
+import { APP_CATALOG, AppId } from "@app/models/appCatalog";
 
 export default function DesktopShortcut({
   id,

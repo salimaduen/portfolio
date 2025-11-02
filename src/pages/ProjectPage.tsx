@@ -1,6 +1,5 @@
-import React from "react";
-import { BrowserPage } from "../features/browser";
-import { Section, P, List, Item, LinkA, Divider, CodeBlock } from "../features/browser/components/BrowserElements"
+import { BrowserPage } from "@features/browser";
+import { Section, P, List, Item, LinkA, Divider, CodeBlock } from "@features/browser/components/BrowserElements"
 
 export default function ProjectsPage() {
   return (

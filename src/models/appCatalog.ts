@@ -1,4 +1,4 @@
-import type { IconTypes } from "../ui/OSIcon";
+import type { IconTypes } from "@app/ui/OSIcon";
 
 export type AppId = "browser" | "files" | "resume" | "github" | "linkedin";
 

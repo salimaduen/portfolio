@@ -1,6 +1,6 @@
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
-import pdf from "../assets/pdf.png";
-import folder from "../assets/folder.png";
+import pdf from "@app/assets/pdf.png";
+import folder from "@app/assets/folder.png";
 
 export type IconTypes = "Linkedin" | "Generic" | "GitHub" | "PDF" | "Browser" | "Files";
 

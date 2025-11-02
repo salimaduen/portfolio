@@ -1,8 +1,8 @@
 import React from "react";
 import { GrApps } from "react-icons/gr";
-import { OSIcon } from "../../../ui";
-import { APP_CATALOG, AppId } from "../../../models/appCatalog";
-import { useWindows } from "../../../context/WindowManager";
+import { OSIcon } from "@app/ui";
+import { APP_CATALOG, AppId } from "@app/models/appCatalog";
+import { useWindows } from "@app/context/WindowManager";
 
 export default function Dock({
   autoTopFromSelector,

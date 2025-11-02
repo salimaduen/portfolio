@@ -1,5 +1,5 @@
-import { IconTypes } from "../../../ui/OSIcon";
-import OSIcon from "../../../ui/OSIcon";
+import { IconTypes } from "@app/ui/OSIcon";
+import OSIcon from "@app/ui/OSIcon";
 
 export interface DesktopIconProps {
   iconType: IconTypes;
