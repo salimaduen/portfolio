@@ -18,7 +18,6 @@ type CtxT = {
   close: (id: AppId) => void;
   toggleMinimize: (id: AppId) => void;
   focus: (id: AppId) => void;
-  /** NEW: update & persist window position during drag */
   setPosition: (id: AppId, pos: XY) => void;
   topZ: number;
   openOrder: AppId[]; // stable dock ordering of opened apps
@@ -27,12 +26,40 @@ type CtxT = {
 const Ctx = createContext<CtxT | null>(null);
 
 // Default state for any window we haven't seen yet
-const defaultWin = (): WinState => ({
-  open: false,
-  minimized: false,
-  z: 0,
-  pos: { x: 96, y: 96 }, // default spawn position
-});
+const defaultWin = (): WinState => {
+  if (typeof window === "undefined") {
+    // Fallback for SSR
+    return { open: false, minimized: false, z: 0, pos: { x: 96, y: 96 } };
+  }
+
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // Default window size (same as WindowContainer)
+  const winW = vw * 0.8;
+  const winH = vh * 0.6;
+
+  // Insets: top bar & dock
+  const topbar = document.querySelector("[data-desktop-topbar]") as HTMLElement | null;
+  const dock = document.querySelector("[data-desktop-dock]") as HTMLElement | null;
+
+  const insetTop = topbar ? topbar.getBoundingClientRect().height : 0;
+  const insetLeft = dock ? dock.getBoundingClientRect().width : 0;
+
+  // Center within usable space
+  const usableW = vw - insetLeft;
+  const usableH = vh - insetTop;
+
+  const x = insetLeft + (usableW - winW) / 2;
+  const y = insetTop + (usableH - winH) / 2;
+
+  return {
+    open: false,
+    minimized: false,
+    z: 0,
+    pos: { x: Math.max(insetLeft, x), y: Math.max(insetTop, y) },
+  };
+};
 
 export function WindowManagerProvider({ children }: { children: React.ReactNode }) {
   const [wins, setWins] = useState<WindowMap>({});
@@ -88,7 +115,6 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
     });
   };
 
-  // NEW: persist position while dragging
   const setPosition = (id: AppId, pos: XY) => {
     setWins((prev) => {
       const cur = ensure(id);

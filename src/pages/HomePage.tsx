@@ -13,8 +13,8 @@ export default function HomePage() {
     return (
         <BrowserPage
             title="about:home"
-            subtitle="Welcome to Salomon’s in-OS Browser"
-            footerNote="Retro • Minimal • Just vibes"
+            subtitle="Welcome to Salomon's in-OS Browser"
+            footerNote="Retro * Minimal * Just vibes"
         >
             <Section title="Welcome">
                 <P>
@@ -29,7 +29,7 @@ export default function HomePage() {
 \__ \| - || |__ | (_) || |\/| || (_) || .  |
 |___/|_|_||____| \___/ |_|  |_| \___/ |_|\_|
 
-   Salim Browser • about:home • v0.1                    
+   Linux Browser • about:home • v0.1                    
 ────────────────────────────────────────── */`
                 }
                 </CodeBlock>
@@ -46,9 +46,6 @@ export default function HomePage() {
                         <LinkA href="https://www.linkedin.com/in/salomon-aduen" external>
                             LinkedIn
                         </LinkA>
-                    </Item>
-                    <Item>
-                        <LinkA href="about:projects">Projects (local)</LinkA>
                     </Item>
                 </List>
             </Section>

@@ -1,11 +1,10 @@
 import type { IconTypes } from "@app/ui/OSIcon";
 
-export type AppId = "browser" | "files" | "resume" | "github" | "linkedin";
+export type AppId = "browser" | "files" | "resume" | "github" | "linkedin" | "projects" | "welcome";
 
 export type AppMeta = {
   id: AppId;
   name: string;
-  /** Store icon TYPES, not JSX, so we choose size at render time */
   dockIconType: IconTypes;
   desktopIconType: IconTypes;
 };
@@ -16,4 +15,6 @@ export const APP_CATALOG: Record<AppId, AppMeta> = {
   resume:   { id: "resume",   name: "Resume",   dockIconType: "PDF",      desktopIconType: "PDF" },
   github:   { id: "github",   name: "GitHub",   dockIconType: "GitHub",   desktopIconType: "GitHub" },
   linkedin: { id: "linkedin", name: "LinkedIn", dockIconType: "Linkedin", desktopIconType: "Linkedin" },
+  projects: { id: "projects", name: "projects", dockIconType: "Browser", desktopIconType: "Browser" },
+  welcome:  { id: "welcome", name: "welcome", dockIconType: "Browser", desktopIconType: "Browser" },
 };

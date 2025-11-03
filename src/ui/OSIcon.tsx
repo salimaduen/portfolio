@@ -27,7 +27,7 @@ export default function OSIcon({ type, variant = "desktop", sizePx, className }:
         <FaGithub className='relative' color='white' size={64} />
       </>
     case "PDF":
-      return <img src={pdf} alt="PDF" style={{ width: px, height: px }} className={`-translate-x-1 ${className}`} />;
+      return <img src={pdf} alt="PDF" style={{ width: px, height: px }} className={`${isDock ? "" : "-translate-x-1"} ${className}`} />;
     case "Files":
       return <img src={folder} alt="Folder" style={{ width: px, height: px }} className={className} />;
     case "Browser":
