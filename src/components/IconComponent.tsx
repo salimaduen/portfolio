@@ -1,6 +1,5 @@
 // Old icons
-import { FaGithub, FaLinkedin, FaRegFilePdf } from "react-icons/fa6";
-import { BsFillFilePdfFill, BsFillFileEarmarkPdfFill } from "react-icons/bs";
+import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import pdf from '../assets/pdf.png';
 import folder from '../assets/folder.png';
 

@@ -1,5 +1,3 @@
-import React from "react";
-
 type Props = { items: string[]; className?: string };
 
 export default function MenuBar({ items, className = "" }: Props) {
