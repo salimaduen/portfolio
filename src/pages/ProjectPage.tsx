@@ -6,9 +6,37 @@ export default function ProjectsPage() {
     <BrowserPage
       title="Projects"
       subtitle="Selected work"
-      footerNote="Built with React + Tailwind • Displayed via in-OS Browser"
+      footerNote="Built with React + Tailwind * Displayed via in-OS Browser"
     >
-      {/* 1) Money Mundo — ShellHacks 2024 */}
+      {/* 1) Portfolio*/}
+      <Section title="Personal Portfolio OS (This Website)">
+        <P>
+          Interactive desktop-inspired portfolio built with React, TypeScript,
+          and Tailwind CSS. Features a full windowing system with draggable,
+          minimizable, and resizable app-like components - including Browser,
+          File Explorer, and Dock.
+        </P>
+        <List>
+          <Item>
+            Designed modular OS-like UI using component-based architecture and
+            context-driven window management.
+          </Item>
+          <Item>
+            Implemented custom window stacking, minimization, and persistent
+            state using React context.
+          </Item>
+          <Item>
+            Integrated dynamic pages for projects, resume, and welcome screen
+            directly within an in-OS browser component.
+          </Item>
+        </List>
+        <P>
+          <LinkA href="https://github.com/salimaduen/portfolio" external>
+            GitHub - Portfolio OS
+          </LinkA>
+        </P>
+      </Section>
+      {/* 2) Money Mundo — ShellHacks 2024 */}
       <Section title="AI-Powered Financial Guidance — Money Mundo (ShellHacks 2024)">
         <P>
           Hackathon project delivering personalized financial guidance through a fine-tuned OpenAI model and modular backend.
@@ -28,7 +56,7 @@ export default function ProjectsPage() {
 
       <Divider />
 
-      {/* 2) Brain Tumor Classifier — ViT vs CNN */}
+      {/* 3) Brain Tumor Classifier — ViT vs CNN */}
       <Section title="Brain Tumor Classifier (ViT vs. CNN)">
         <P>
           Comparative ML project evaluating a custom CNN versus a fine-tuned Vision Transformer (ViT) for MRI-based brain tumor classification.
@@ -46,7 +74,7 @@ export default function ProjectsPage() {
         </P>
         <Divider />
         <CodeBlock>
-{`# Example transforms (PyTorch)
+          {`# Example transforms (PyTorch)
 transforms.Compose([
   transforms.Resize(224),
   transforms.RandomHorizontalFlip(),
@@ -59,7 +87,7 @@ transforms.Compose([
 
       <Divider />
 
-      {/* 3) DevBuds */}
+      {/* 4) DevBuds */}
       <Section title="DevBuds - Team Up by Role & Skills">
         <P>
           Collaborative platform where users can post project ideas and recruit by role (frontend, backend, UI/UX).
@@ -79,7 +107,7 @@ transforms.Compose([
 
       <Divider />
 
-      {/* 4) Google Tech Exchange — Software Dev Studio */}
+      {/* 5) Google Tech Exchange — Software Dev Studio */}
       <Section title="Google Tech Exchange - Software Development Studio">
         <P>
           Led a 3-person team to build a greenfield Wiki site using Python/Flask and Google Cloud, featuring user authentication
