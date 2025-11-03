@@ -12,7 +12,7 @@ import BrowserView from "@features/browser/components/BrowserView";
 import FileExplorerView from "@features/files/components/FileExplorerView";
 import ExplorerTopBar from "@features/files/components/ExplorerTopBar";
 
-import ProjectsPage from "@app/pages/ProjectPage";
+import ProjectsPage from "@app/pages/ProjectsPage";
 import HomePage from "@app/pages/HomePage";
 import OSWelcomePage from "@app/pages/OSWelcomePage";
 import ResumePage from "@app/pages/ResumePage";
