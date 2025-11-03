@@ -17,11 +17,17 @@ export default function OSIcon({ type, variant = "desktop", sizePx, className }:
 
   switch (type) {
     case "Linkedin":
-      return <FaLinkedin size={px} color="#0077B5" className={className} />;
+      return <>
+        <div className='bg-white rounded-lg w-14 h-14 absolute'></div>
+        <FaLinkedin className='relative' color='#0077B5' size={64} />
+      </>
     case "GitHub":
-      return <FaGithub size={px} color="white" className={className} />;
+      return <>
+        <div className='bg-black rounded-full w-16 h-16 absolute'></div>
+        <FaGithub className='relative' color='white' size={64} />
+      </>
     case "PDF":
-      return <img src={pdf} alt="PDF" style={{ width: px, height: px }} className={className} />;
+      return <img src={pdf} alt="PDF" style={{ width: px, height: px }} className={`-translate-x-1 ${className}`} />;
     case "Files":
       return <img src={folder} alt="Folder" style={{ width: px, height: px }} className={className} />;
     case "Browser":
