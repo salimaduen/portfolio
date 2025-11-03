@@ -14,7 +14,7 @@ export default function OSWelcomePage() {
         <BrowserPage
             title="about:welcome"
             subtitle="Welcome to Salomon OS"
-            footerNote="Tip: Drag windows by the top bar • Dock on the left to switch apps"
+            footerNote="Tip: Drag windows by the top bar * Dock on the left to switch apps"
         >
             <Section title="Hello! 👋">
                 <P>
