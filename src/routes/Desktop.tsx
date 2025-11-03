@@ -1,11 +1,11 @@
 import TopBar from "@features/desktop/components/TopBar";
 import DesktopSurface from "@features/desktop/components/DesktopSurface";
 import { Dock } from "@features/desktop";
-import { OSIcon } from "@app/ui";
 import { Window } from "@features/desktop";
 
 import { WindowManagerProvider, useWindows } from "@app/context/WindowManager";
-import { APP_CATALOG, AppId } from "@app/models/appCatalog";
+import { AppId } from "@app/models/appCatalog";
+import { DesktopShortcut } from "@features/desktop";
 
 import BrowserView from "@features/browser/components/BrowserView";
 import FileExplorerView from "@features/files/components/FileExplorerView";
@@ -31,27 +31,14 @@ function DesktopInner() {
     <div className="flex flex-col h-screen w-screen">
       <TopBar dataAttribute="data-desktop-topbar" />
       <DesktopSurface>
-        <SelectionArea className="z-[1]"/>
+        <SelectionArea className="z-[1]" />
         <Dock autoTopFromSelector="[data-desktop-topbar]" pinned={["browser", "files"]} />
 
         {/* Desktop icons */}
         <div className="absolute left-16 top-4 space-y-4">
-          {desktopIcons.map((id) => {
-            const meta = APP_CATALOG[id];
-            return (
-              <div
-                key={id}
-                onClick={() => onOpen(id)}
-                className="flex flex-col items-center w-24 text-white select-none cursor-pointer hover:brightness-110 transition"
-                title={meta.name}
-              >
-                <div className="flex items-center justify-center w-16 h-16 relative">
-                  <OSIcon type={meta.desktopIconType} variant="desktop" sizePx={64} />
-                </div>
-                <p className="mt-2 text-center text-sm drop-shadow-sm">{meta.name}</p>
-              </div>
-            );
-          })}
+          {desktopIcons.map((id) => (
+            <DesktopShortcut key={id} id={id} onOpen={onOpen} />
+          ))}
         </div>
 
         {/* Windows (one-liners now) */}
