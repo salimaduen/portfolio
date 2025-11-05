@@ -37,7 +37,7 @@ export default function ProjectsPage() {
         </P>
       </Section>
       {/* 2) Money Mundo — ShellHacks 2024 */}
-      <Section title="AI-Powered Financial Guidance — Money Mundo (ShellHacks 2024)">
+      <Section title="AI-Powered Financial Guidance - Money Mundo (ShellHacks 2024)">
         <P>
           Hackathon project delivering personalized financial guidance through a fine-tuned OpenAI model and modular backend.
           Achieved ~65% higher response accuracy and relevance in user evaluations.

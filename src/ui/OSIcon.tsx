@@ -43,7 +43,7 @@ export default function OSIcon({ type, variant = "desktop", sizePx, className }:
                 "radial-gradient(circle at 30% 30%, #FFB900 0%, #FF7139 45%, #E33F0E 100%)",
             }}
           />
-          {/* Firefox logo overlay (white flame silhouette) */}
+          {/* Firefox logo overlay */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 512 512"

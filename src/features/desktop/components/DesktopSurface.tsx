@@ -4,7 +4,7 @@ import phoneWall   from '@app/assets/ubuntu-wallpaper-phone.png';
 type Props = { children?: React.ReactNode };
 
 /**
- * Renders a full-screen wallpaper via <picture>/<img> for crisp, predictable scaling.
+ * Renders a full-screen wallpaper
  * - Phone: phoneWall
  * - ≥sm: desktopWall
  * Both use object-cover to fill the viewport. Tweak the crop by adjusting object position below.
